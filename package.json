@@ -2,10 +2,15 @@
   "name": "equation-connect",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "tsc"
   },
+  "files": [
+    "/dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AndreMiras/equation-connect.js.git"
@@ -15,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/AndreMiras/equation-connect.js/issues"
   },
-  "homepage": "https://github.com/AndreMiras/equation-connect.js#readme"
+  "homepage": "https://github.com/AndreMiras/equation-connect.js#readme",
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
 }
