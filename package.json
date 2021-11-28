@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/AndreMiras/equation-connect.js/issues"
   },
-  "homepage": "https://github.com/AndreMiras/equation-connect.js#readme"
+  "homepage": "https://github.com/AndreMiras/equation-connect.js#readme",
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
 }
