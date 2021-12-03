@@ -1,5 +1,7 @@
 # Equation Connect
 
+[![Tests](https://github.com/AndreMiras/equation-connect.js/workflows/Tests/badge.svg?branch=develop)](https://github.com/AndreMiras/equation-connect.js/actions?query=workflow%3ATests)
+
 This is a library for the reverse engineered
 [Equation Connect](https://play.google.com/store/apps/details?id=com.equation.connect) API.
 The Equation Connect is an app for controlling wifi radiators.
