@@ -6,6 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --check src",
+    "format": "prettier --write src",
     "build": "tsc"
   },
   "files": [
@@ -22,6 +24,7 @@
   },
   "homepage": "https://github.com/AndreMiras/equation-connect.js#readme",
   "devDependencies": {
+    "prettier": "^2.5.0",
     "typescript": "^4.5.2"
   },
   "dependencies": {
