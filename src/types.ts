@@ -7,7 +7,7 @@ interface ZoneOverviewType {
   temp: number;
   power: boolean;
   mode: string;
-  devices: {
+  devices?: {
     [key: string]: boolean;
   };
 }
