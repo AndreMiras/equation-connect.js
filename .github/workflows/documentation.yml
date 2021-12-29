@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - feature/documentation
 
 jobs:
   deploy:
@@ -24,10 +23,10 @@ jobs:
         git ls-remote --exit-code . origin/gh-pages \
           && git checkout -b gh-pages \
           || git checkout --orphan gh-pages
-        git checkout -b gh-pages
         git reset --hard
+        git pull --set-upstream origin gh-pages
         cp --recursive /tmp/docs/. .
         echo /node_modules > .gitignore
         git add --all
         git commit --all --message ":memo: docs: Update generated documentation"
-        git push --set-upstream origin gh-pages
+        git push origin gh-pages
