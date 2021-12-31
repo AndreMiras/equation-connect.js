@@ -7,6 +7,7 @@ import {
   query,
   orderByChild,
   ref,
+  update,
 } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { DeviceType, InstallationsType } from "./types";
@@ -55,4 +56,22 @@ const getDevice = async (id: string): Promise<DeviceType> => {
   return device;
 };
 
-export { auth, login, logout, getInstallations, getUser, getDevice };
+const updateDevice = (id: string, data: any): void => {
+  const path = `devices/${id}/data`;
+  const reference = child(ref(database), path);
+  update(reference, { ...data });
+};
+
+const updateDeviceTemperature = (id: string, temp: number): void => {
+  updateDevice(id, { temp });
+};
+
+export {
+  auth,
+  login,
+  logout,
+  getInstallations,
+  getUser,
+  getDevice,
+  updateDeviceTemperature,
+};
