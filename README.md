@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/AndreMiras/equation-connect.js/workflows/Tests/badge.svg?branch=develop)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/tests.yml)
 [![Documentation](https://github.com/AndreMiras/equation-connect.js/workflows/Documentation/badge.svg?branch=develop)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/documentation.yml)
+[![npm version](https://badge.fury.io/js/equation-connect.svg)](https://badge.fury.io/js/equation-connect)
 
 This is a library for the reverse engineered
 [Equation Connect](https://play.google.com/store/apps/details?id=com.equation.connect) API.

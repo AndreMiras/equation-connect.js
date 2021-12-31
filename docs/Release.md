@@ -23,6 +23,9 @@ git push --tags
 ```
 
 ## Publish to npm
+Publication to npm happens automatically from GitHub actions on push to main.
+Alternatively it can be done manually via:
 ```sh
+yarn build
 npm publish
 ```
