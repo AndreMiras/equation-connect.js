@@ -3,7 +3,7 @@
 This is documenting the release process.
 
 
-## Git flow & CHANGELOG.md
+## Git flow
 
 Start the release with git flow:
 ```sh
