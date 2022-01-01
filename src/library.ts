@@ -10,7 +10,12 @@ import {
   update,
 } from "firebase/database";
 import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { DeviceType, InstallationsType } from "./types";
+import {
+  DeviceMode,
+  DeviceStatus,
+  DeviceType,
+  InstallationsType,
+} from "./types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDfqBq3AfIg1wPjuHse3eiXqeDIxnhvp6U",
@@ -66,6 +71,21 @@ const updateDeviceTemperature = (id: string, temp: number): void => {
   updateDevice(id, { temp });
 };
 
+const setDevicePreset = async (
+  id: string,
+  status: DeviceStatus
+): Promise<void> => {
+  const device = await getDevice(id);
+  const temp = device.data[status];
+  const data = {
+    power: true,
+    mode: DeviceMode.Manual,
+    temp,
+    status: DeviceStatus[status],
+  };
+  updateDevice(id, { ...data });
+};
+
 export {
   auth,
   login,
@@ -74,4 +94,5 @@ export {
   getUser,
   getDevice,
   updateDeviceTemperature,
+  setDevicePreset,
 };

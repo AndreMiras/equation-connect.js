@@ -1,3 +1,12 @@
+export type {
+  ZoneOverviewType,
+  ZonesOverviewType,
+  InstallationType,
+  InstallationsType,
+} from "./types";
+
+export { DeviceStatus, DeviceType } from "./types";
+
 export {
   auth,
   login,
@@ -5,13 +14,6 @@ export {
   getInstallations,
   getUser,
   getDevice,
+  setDevicePreset,
   updateDeviceTemperature,
 } from "./library";
-
-export type {
-  ZoneOverviewType,
-  ZonesOverviewType,
-  InstallationType,
-  InstallationsType,
-  DeviceType,
-} from "./types";
