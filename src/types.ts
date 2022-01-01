@@ -29,6 +29,16 @@ interface InstallationsType {
   [key: string]: InstallationType;
 }
 
+enum DeviceStatus {
+  Ice = "ice",
+  Eco = "eco",
+  Comfort = "comfort",
+}
+
+enum DeviceMode {
+  Manual = "manual",
+}
+
 interface DeviceDataType {
   adelanto_enable: boolean;
   backlight: number;
@@ -55,7 +65,7 @@ interface DeviceDataType {
   last_sync_datetime_device: number;
   last_sync_datetime_tariff: number;
   mgmt_modules: number;
-  mode: string;
+  mode: DeviceMode;
   name: string;
   nominal_power: number;
   pilot_mode: boolean;
@@ -66,7 +76,7 @@ interface DeviceDataType {
   product_version: string;
   schedule: string[];
   schedule_type: number;
-  status: string;
+  status: DeviceStatus;
   temp: number;
   temp_calc: number;
   temp_probe: number;
@@ -109,3 +119,5 @@ export type {
   InstallationsType,
   DeviceType,
 };
+
+export { DeviceStatus, DeviceMode };

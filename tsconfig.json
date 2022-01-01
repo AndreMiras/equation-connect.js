@@ -4,7 +4,8 @@
     "target": "es2015",
     "declaration": true,
     "outDir": "./dist",
-    "strict": true
+    "strict": true,
+    "preserveConstEnums": true
   },
   "include": [
     "src/**/*"
