@@ -120,6 +120,22 @@ const setDevicePowerOff = (id: string): void => {
   updateDevice(id, { power: false });
 };
 
+/**
+ * Sets device backlight value, the higher the brighter.
+ * This backlight also applies when the device is off.
+ */
+const setDeviceBacklight = (id: string, backlight: number): void => {
+  updateDevice(id, { backlight });
+};
+
+/**
+ * Sets device backlight value, the higher the brighter.
+ * This backlight only applies when the device is on.
+ */
+const setDeviceBacklightOn = (id: string, backlight: number): void => {
+  updateDevice(id, { backlight_on: backlight });
+};
+
 export {
   auth,
   login,
@@ -129,6 +145,8 @@ export {
   getDevice,
   updateDevice,
   updateDeviceTemperature,
+  setDeviceBacklight,
+  setDeviceBacklightOn,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,
