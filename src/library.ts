@@ -61,6 +61,17 @@ const getDevice = async (id: string): Promise<DeviceType> => {
   return device;
 };
 
+/**
+ * Updates device raw `data` property.
+ *
+ * ```ts
+ * const id = '504DC27CB994706DC56BB993';
+ * const temp = 20;
+ * updateDevice(id, { temp });
+ * const power = false;
+ * updateDevice(id, { power });
+ * ```
+ */
 const updateDevice = (id: string, data: any): void => {
   const path = `devices/${id}/data`;
   const reference = child(ref(database), path);
@@ -109,6 +120,22 @@ const setDevicePowerOff = (id: string): void => {
   updateDevice(id, { power: false });
 };
 
+/**
+ * Sets device backlight value, the higher the brighter.
+ * This backlight also applies when the device is off.
+ */
+const setDeviceBacklight = (id: string, backlight: number): void => {
+  updateDevice(id, { backlight });
+};
+
+/**
+ * Sets device backlight value, the higher the brighter.
+ * This backlight only applies when the device is on.
+ */
+const setDeviceBacklightOn = (id: string, backlight: number): void => {
+  updateDevice(id, { backlight_on: backlight });
+};
+
 export {
   auth,
   login,
@@ -116,7 +143,10 @@ export {
   getInstallations,
   getUser,
   getDevice,
+  updateDevice,
   updateDeviceTemperature,
+  setDeviceBacklight,
+  setDeviceBacklightOn,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,

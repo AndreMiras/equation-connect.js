@@ -18,5 +18,8 @@ export {
   setDevicePowerOff,
   setDevicePowerOn,
   setDevicePreset,
+  updateDevice,
+  setDeviceBacklight,
+  setDeviceBacklightOn,
   updateDeviceTemperature,
 } from "./library";
