@@ -14,6 +14,9 @@ export {
   getInstallations,
   getUser,
   getDevice,
+  setDevicePower,
+  setDevicePowerOff,
+  setDevicePowerOn,
   setDevicePreset,
   updateDeviceTemperature,
 } from "./library";
