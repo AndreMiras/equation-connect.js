@@ -86,6 +86,29 @@ const setDevicePreset = async (
   updateDevice(id, { ...data });
 };
 
+/**
+ * Turns radiator on or off.
+ *
+ * @param power set `true` to turn on and `false` to turn off.
+ */
+const setDevicePower = (id: string, power: boolean): void => {
+  updateDevice(id, { power });
+};
+
+/**
+ * Turns radiator on.
+ */
+const setDevicePowerOn = (id: string): void => {
+  updateDevice(id, { power: true });
+};
+
+/**
+ * Turns radiator off.
+ */
+const setDevicePowerOff = (id: string): void => {
+  updateDevice(id, { power: false });
+};
+
 export {
   auth,
   login,
@@ -94,5 +117,8 @@ export {
   getUser,
   getDevice,
   updateDeviceTemperature,
+  setDevicePower,
+  setDevicePowerOff,
+  setDevicePowerOn,
   setDevicePreset,
 };
