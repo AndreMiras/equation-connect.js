@@ -81,7 +81,7 @@ const setDevicePreset = async (
     power: true,
     mode: DeviceMode.Manual,
     temp,
-    status: DeviceStatus[status],
+    status,
   };
   updateDevice(id, { ...data });
 };
