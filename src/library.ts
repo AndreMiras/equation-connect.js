@@ -142,6 +142,7 @@ const setDeviceBacklightOn = (id: string, backlight: number): void => {
 
 export {
   auth,
+  database,
   deviceByIdPath,
   deviceDataByIdPath,
   login,

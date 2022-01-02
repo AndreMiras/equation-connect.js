@@ -9,6 +9,7 @@ export { DeviceStatus, DeviceType } from "./types";
 
 export {
   auth,
+  database,
   deviceByIdPath,
   deviceDataByIdPath,
   login,
