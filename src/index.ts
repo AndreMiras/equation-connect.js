@@ -9,6 +9,8 @@ export { DeviceStatus, DeviceType } from "./types";
 
 export {
   auth,
+  deviceByIdPath,
+  deviceDataByIdPath,
   login,
   logout,
   getInstallations,
@@ -18,8 +20,9 @@ export {
   setDevicePowerOff,
   setDevicePowerOn,
   setDevicePreset,
-  updateDevice,
   setDeviceBacklight,
   setDeviceBacklightOn,
+  updateDevice,
   updateDeviceTemperature,
+  userByUidPath,
 } from "./library";

@@ -31,6 +31,10 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase();
 const auth = getAuth(app);
 
+const userByUidPath = (uid: string) => `users/${uid}`;
+const deviceByIdPath = (id: string) => `devices/${id}`;
+const deviceDataByIdPath = (id: string) => `${deviceByIdPath(id)}/data`;
+
 const login = async (email: string, password: string) => {
   const { user } = await signInWithEmailAndPassword(auth, email, password);
   return user;
@@ -39,7 +43,7 @@ const login = async (email: string, password: string) => {
 const logout = () => signOut(auth);
 
 const getUser = async (uid: string) => {
-  const path = `users/${uid}`;
+  const path = userByUidPath(uid);
   const snapshot = await get(child(ref(database), path));
   const user = snapshot.val();
   return user;
@@ -55,7 +59,7 @@ const getInstallations = async (uid: string): Promise<InstallationsType> => {
 };
 
 const getDevice = async (id: string): Promise<DeviceType> => {
-  const path = `devices/${id}`;
+  const path = deviceByIdPath(id);
   const snapshot = await get(child(ref(database), path));
   const device = snapshot.val();
   return device;
@@ -73,7 +77,7 @@ const getDevice = async (id: string): Promise<DeviceType> => {
  * ```
  */
 const updateDevice = (id: string, data: any): void => {
-  const path = `devices/${id}/data`;
+  const path = deviceDataByIdPath(id);
   const reference = child(ref(database), path);
   update(reference, { ...data });
 };
@@ -138,17 +142,20 @@ const setDeviceBacklightOn = (id: string, backlight: number): void => {
 
 export {
   auth,
+  deviceByIdPath,
+  deviceDataByIdPath,
   login,
   logout,
   getInstallations,
   getUser,
   getDevice,
-  updateDevice,
-  updateDeviceTemperature,
   setDeviceBacklight,
   setDeviceBacklightOn,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,
   setDevicePreset,
+  updateDevice,
+  updateDeviceTemperature,
+  userByUidPath,
 };
