@@ -120,4 +120,4 @@ export type {
   DeviceType,
 };
 
-export { DeviceStatus, DeviceMode };
+export { DeviceDataType, DeviceStatus, DeviceMode };

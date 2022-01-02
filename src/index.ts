@@ -1,4 +1,5 @@
 export type {
+  DeviceDataType,
   ZoneOverviewType,
   ZonesOverviewType,
   InstallationType,
