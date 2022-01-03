@@ -32,6 +32,7 @@ const database = getDatabase();
 const auth = getAuth(app);
 
 const userByUidPath = (uid: string) => `users/${uid}`;
+const installationsPath = "installations2";
 const deviceByIdPath = (id: string) => `devices/${id}`;
 const deviceDataByIdPath = (id: string) => `${deviceByIdPath(id)}/data`;
 
@@ -50,7 +51,7 @@ const getUser = async (uid: string) => {
 };
 
 const getInstallations = async (uid: string): Promise<InstallationsType> => {
-  const path = "installations2";
+  const path = installationsPath;
   const snapshot = await get(
     query(ref(database, path), orderByChild("userid"), equalTo(uid))
   );
@@ -145,6 +146,7 @@ export {
   database,
   deviceByIdPath,
   deviceDataByIdPath,
+  installationsPath,
   login,
   logout,
   getInstallations,

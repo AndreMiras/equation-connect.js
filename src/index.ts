@@ -13,6 +13,7 @@ export {
   database,
   deviceByIdPath,
   deviceDataByIdPath,
+  installationsPath,
   login,
   logout,
   getInstallations,
