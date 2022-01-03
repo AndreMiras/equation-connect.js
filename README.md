@@ -5,8 +5,16 @@
 [![npm version](https://badge.fury.io/js/equation-connect.svg)](https://badge.fury.io/js/equation-connect)
 
 This is a library for the reverse engineered
-[Equation Connect](https://play.google.com/store/apps/details?id=com.equation.connect) API.
-The Equation Connect is an app for controlling wifi radiators.
+[Equation Connect](https://play.google.com/store/apps/details?id=com.equation.connect) Firebase Database API.
+
+The Equation Connect is an app for controlling wifi radiators, like the
+[Emisor fluido EQUATION Adagio 1250w](https://www.leroymerlin.es/fp/83406849/emisor-fluido-equation-adagio-1250w)
+from Leroy Merlin.
+
+## Motivations
+- providing an open source web alternative to the proprietary mobile app
+- remote backlight setup
+- access to temperature sensors
 
 ## Install
 ```sh
@@ -25,5 +33,5 @@ const showInstallations = async (email, password) => {
 };
 showInstallations(process.env.EMAIL, process.env.PASSWORD);
 ```
-Explore documentation:
+Explore the documentation for more:
 <https://andremiras.github.io/equation-connect.js>
