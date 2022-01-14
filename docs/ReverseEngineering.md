@@ -3,6 +3,9 @@
 This is documenting my journey to reverse engineering the
 [Equation Connect app](https://play.google.com/store/apps/details?id=com.equation.connect).
 The goal was to be able to drive the radiators wirelessly without having to use the proprietary app.
+This is also valid for the
+[Rointe Connect app](https://play.google.com/store/apps/details?id=com.droiders.android.rointeconnect)
+which shares the code base, but has different Firebase database.
 
 
 ## APK download & decompiling
@@ -39,11 +42,8 @@ This is an extract of the juicy part:
 ```xml
 ...
 <string name="firebase_database_url">https://oem2-elife-cloud-prod-default-rtdb.firebaseio.com</string>
-<string name="legal_advice_oem_url">https://oem1-elife-cloud-prod.firebaseapp.com</string>
-...
 <string name="google_api_key">AIzaSyDfqBq3AfIg1wPjuHse3eiXqeDIxnhvp6U</string>
 <string name="google_app_id">1:150904115315:android:03aeef2c831bbda0061a06</string>
-<string name="google_crash_reporting_api_key">AIzaSyDfqBq3AfIg1wPjuHse3eiXqeDIxnhvp6U</string>
 <string name="google_storage_bucket">oem2-elife-cloud-prod.appspot.com</string>
 ...
 ```

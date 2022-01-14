@@ -5,12 +5,15 @@
 [![npm version](https://badge.fury.io/js/equation-connect.svg)](https://badge.fury.io/js/equation-connect)
 
 This is a library for the [Reverse Engineered](docs/ReverseEngineering.md)
-Equation Connect Firebase API.
+Equation & Rointe Connect Firebase API.
 
 The [Equation Connect](https://play.google.com/store/apps/details?id=com.equation.connect)
 is an app for controlling wifi radiators, like the
 [Emisor fluido EQUATION Adagio 1250w](https://www.leroymerlin.es/fp/83406849/emisor-fluido-equation-adagio-1250w)
 from Leroy Merlin.
+The library is also compatible with
+[Rointe Connect](https://play.google.com/store/apps/details?id=com.droiders.android.rointeconnect)
+since it uses the same infrastructure, but different connection paramters.
 
 ## Motivations
 - providing an [open source web alternative](https://github.com/AndreMiras/equation-connect)
