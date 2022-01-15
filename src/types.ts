@@ -1,3 +1,8 @@
+enum FirebaseConfig {
+  EquationConnect,
+  RointeConnect,
+}
+
 interface ZoneOverviewType {
   id: string;
   name: string;
@@ -120,4 +125,4 @@ export type {
   DeviceType,
 };
 
-export { DeviceStatus, DeviceMode };
+export { DeviceDataType, DeviceStatus, DeviceMode, FirebaseConfig };

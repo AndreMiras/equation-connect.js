@@ -1,4 +1,5 @@
-import { initializeApp } from "firebase/app";
+import { strict as assert } from "assert";
+import { initializeApp, deleteApp, getApp, FirebaseApp } from "firebase/app";
 import {
   child,
   equalTo,
@@ -8,49 +9,86 @@ import {
   orderByChild,
   ref,
   update,
+  Database,
 } from "firebase/database";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  Auth,
+} from "firebase/auth";
 import {
   DeviceMode,
   DeviceStatus,
   DeviceType,
+  FirebaseConfig,
   InstallationsType,
 } from "./types";
 
-const firebaseConfig = {
+const equationConnectConfig = {
   apiKey: "AIzaSyDfqBq3AfIg1wPjuHse3eiXqeDIxnhvp6U",
-  authDomain: "oem1-elife-cloud-prod.firebaseapp.com",
   databaseURL: "https://oem2-elife-cloud-prod-default-rtdb.firebaseio.com",
   projectId: "oem2-elife-cloud-prod",
   storageBucket: "oem2-elife-cloud-prod.appspot.com",
   appId: "1:150904115315:android:03aeef2c831bbda0061a06",
 };
+const rointeConnectConfig = {
+  apiKey: "AIzaSyCoysJDGK-U6EchAqPZcN1lw4itRkXXcTw",
+  databaseURL: "https://elife-prod.firebaseio.com",
+  projectId: "elife-prod",
+  storageBucket: "firebase-elife-prod.appspot.com",
+  appId: "1:150904115315:android:03aeef2c831bbda0061a06",
+};
+const firebaseConfigs = {
+  [FirebaseConfig.EquationConnect]: equationConnectConfig,
+  [FirebaseConfig.RointeConnect]: rointeConnectConfig,
+};
+var app: FirebaseApp | null = null;
+var auth: Auth | null = null;
+var database: Database | null = null;
 
+/**
+ * Initializes the firebase app then set and returns both `app` and `auth` global variables.
+ */
+const init = (
+  config: FirebaseConfig = FirebaseConfig.EquationConnect
+): { app: FirebaseApp; auth: Auth; database: Database } => {
+  const firebaseConfig = firebaseConfigs[config];
+  if (app?.options?.projectId === firebaseConfig.projectId)
+    return { app, auth: getAuth(app), database: getDatabase(app) };
+  if (app !== null) deleteApp(getApp());
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  database = getDatabase(app);
+  return { app, auth, database };
+};
 // TODO: do not init at import time, but at first usage e.g. with a singleton
-const app = initializeApp(firebaseConfig);
-const database = getDatabase();
-const auth = getAuth(app);
+({ app, auth, database } = init());
 
 const userByUidPath = (uid: string) => `users/${uid}`;
+const installationsPath = "installations2";
 const deviceByIdPath = (id: string) => `devices/${id}`;
 const deviceDataByIdPath = (id: string) => `${deviceByIdPath(id)}/data`;
 
 const login = async (email: string, password: string) => {
+  assert(auth);
   const { user } = await signInWithEmailAndPassword(auth, email, password);
   return user;
 };
 
-const logout = () => signOut(auth);
+const logout = () => signOut(getAuth());
 
 const getUser = async (uid: string) => {
   const path = userByUidPath(uid);
+  assert(database);
   const snapshot = await get(child(ref(database), path));
   const user = snapshot.val();
   return user;
 };
 
 const getInstallations = async (uid: string): Promise<InstallationsType> => {
-  const path = "installations2";
+  assert(database);
+  const path = installationsPath;
   const snapshot = await get(
     query(ref(database, path), orderByChild("userid"), equalTo(uid))
   );
@@ -59,6 +97,7 @@ const getInstallations = async (uid: string): Promise<InstallationsType> => {
 };
 
 const getDevice = async (id: string): Promise<DeviceType> => {
+  assert(database);
   const path = deviceByIdPath(id);
   const snapshot = await get(child(ref(database), path));
   const device = snapshot.val();
@@ -77,6 +116,7 @@ const getDevice = async (id: string): Promise<DeviceType> => {
  * ```
  */
 const updateDevice = (id: string, data: any): void => {
+  assert(database);
   const path = deviceDataByIdPath(id);
   const reference = child(ref(database), path);
   update(reference, { ...data });
@@ -145,6 +185,8 @@ export {
   database,
   deviceByIdPath,
   deviceDataByIdPath,
+  init,
+  installationsPath,
   login,
   logout,
   getInstallations,

@@ -1,17 +1,20 @@
 export type {
+  DeviceDataType,
   ZoneOverviewType,
   ZonesOverviewType,
   InstallationType,
   InstallationsType,
 } from "./types";
 
-export { DeviceStatus, DeviceType } from "./types";
+export { DeviceMode, DeviceStatus, DeviceType, FirebaseConfig } from "./types";
 
 export {
   auth,
   database,
   deviceByIdPath,
   deviceDataByIdPath,
+  init,
+  installationsPath,
   login,
   logout,
   getInstallations,
