@@ -27,6 +27,7 @@ import {
 
 const equationConnectConfig = {
   apiKey: "AIzaSyDfqBq3AfIg1wPjuHse3eiXqeDIxnhvp6U",
+  authDomain: "oem1-elife-cloud-prod.firebaseapp.com",
   databaseURL: "https://oem2-elife-cloud-prod-default-rtdb.firebaseio.com",
   projectId: "oem2-elife-cloud-prod",
   storageBucket: "oem2-elife-cloud-prod.appspot.com",
