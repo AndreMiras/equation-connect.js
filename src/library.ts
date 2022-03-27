@@ -23,6 +23,7 @@ import {
   DeviceType,
   FirebaseConfig,
   InstallationsType,
+  ZoneOverviewType,
 } from "./types";
 
 const equationConnectConfig = {
@@ -68,8 +69,11 @@ const init = (
 
 const userByUidPath = (uid: string) => `users/${uid}`;
 const installationsPath = "installations2";
+const installationByIdPath = (id: string) => `${installationsPath}/${id}`;
 const deviceByIdPath = (id: string) => `devices/${id}`;
 const deviceDataByIdPath = (id: string) => `${deviceByIdPath(id)}/data`;
+const zoneByIdPath = (installationId: string, id: string) =>
+  `${installationByIdPath(installationId)}/zones/${id}`;
 
 const login = async (email: string, password: string) => {
   assert(auth);
@@ -105,6 +109,17 @@ const getDevice = async (id: string): Promise<DeviceType> => {
   return device;
 };
 
+const getZone = async (
+  installationId: string,
+  id: string
+): Promise<ZoneOverviewType> => {
+  assert(database);
+  const path = zoneByIdPath(installationId, id);
+  const snapshot = await get(child(ref(database), path));
+  const zone = snapshot.val();
+  return zone;
+};
+
 /**
  * Updates device raw `data` property.
  *
@@ -119,6 +134,13 @@ const getDevice = async (id: string): Promise<DeviceType> => {
 const updateDevice = (id: string, data: any): void => {
   assert(database);
   const path = deviceDataByIdPath(id);
+  const reference = child(ref(database), path);
+  update(reference, { ...data });
+};
+
+const updateZone = (installationId: string, id: string, data: any): void => {
+  assert(database);
+  const path = zoneByIdPath(installationId, id);
   const reference = child(ref(database), path);
   update(reference, { ...data });
 };
@@ -181,25 +203,86 @@ const setDeviceBacklightOn = (id: string, backlight: number): void => {
   updateDevice(id, { backlight_on: backlight });
 };
 
+const setZonePreset = async (
+  installationId: string,
+  id: string,
+  status: DeviceStatus
+): Promise<void> => {
+  const zone = await getZone(installationId, id);
+  // for some reason `zone.ice` isn't defined in the `installation2` response
+  assert(
+    status !== DeviceStatus.Ice,
+    `The ${DeviceStatus.Ice} isn't available for zones`
+  );
+  const temp = zone[status];
+  const data = {
+    power: true,
+    mode: DeviceMode.Manual,
+    temp,
+    status,
+  };
+  const devices = zone.devices || {};
+  Object.keys(devices).forEach((deviceId) => setDevicePreset(deviceId, status));
+  updateZone(installationId, id, { ...data });
+};
+
+/**
+ * Turns zone on or off.
+ *
+ * @param power set `true` to turn on and `false` to turn off.
+ */
+const setZonePower = async (
+  installationId: string,
+  id: string,
+  power: boolean
+): Promise<void> => {
+  const zone = await getZone(installationId, id);
+  const devices = zone.devices || {};
+  Object.keys(devices).forEach((deviceId) => setDevicePower(deviceId, power));
+  updateZone(installationId, id, { power });
+};
+
+/**
+ * Turns zone on.
+ */
+const setZonePowerOn = (installationId: string, id: string): void => {
+  updateZone(installationId, id, { power: true });
+};
+
+/**
+ * Turns zone off.
+ */
+const setZonePowerOff = (installationId: string, id: string): void => {
+  updateZone(installationId, id, { power: false });
+};
+
 export {
   auth,
   database,
   deviceByIdPath,
   deviceDataByIdPath,
   init,
+  installationByIdPath,
   installationsPath,
   login,
   logout,
   getInstallations,
   getUser,
   getDevice,
+  getZone,
   setDeviceBacklight,
   setDeviceBacklightOn,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,
+  setZonePreset,
+  setZonePower,
+  setZonePowerOff,
+  setZonePowerOn,
   setDevicePreset,
   updateDevice,
   updateDeviceTemperature,
+  updateZone,
   userByUidPath,
+  zoneByIdPath,
 };
