@@ -15,6 +15,7 @@ interface ZoneOverviewType {
   devices?: {
     [key: string]: boolean;
   };
+  status: DeviceStatus;
 }
 
 interface ZonesOverviewType {
