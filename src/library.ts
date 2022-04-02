@@ -203,6 +203,28 @@ const setDeviceBacklightOn = (id: string, backlight: number): void => {
   updateDevice(id, { backlight_on: backlight });
 };
 
+/**
+ * Returns the preset that's currently matching with the zone data as well as
+ * with the devices part of the zone otherwise returns null.
+ * This means if the zone has a `DeviceStatus.Comfort`, but only one of the
+ * device from the zone has a different value, the function would return null.
+ * Note that this would then query every single device of the zone.
+ */
+const getZonePreset = async (
+  installationId: string,
+  id: string
+): Promise<DeviceStatus | null> => {
+  const zone = await getZone(installationId, id);
+  const status = zone.status;
+  const deviceIds = zone.devices || {};
+  const devices: DeviceType[] = await Promise.all(
+    Object.keys(deviceIds).map((deviceId) => getDevice(deviceId))
+  );
+  const statusList = devices.map((device) => device.data.status);
+  const allEqual = statusList.every((val) => val === status);
+  return allEqual ? status : null;
+};
+
 const setZonePreset = async (
   installationId: string,
   id: string,
@@ -270,6 +292,7 @@ export {
   getUser,
   getDevice,
   getZone,
+  getZonePreset,
   setDeviceBacklight,
   setDeviceBacklightOn,
   setDevicePower,

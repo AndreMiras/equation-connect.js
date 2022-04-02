@@ -22,6 +22,7 @@ export {
   getUser,
   getDevice,
   getZone,
+  getZonePreset,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,
