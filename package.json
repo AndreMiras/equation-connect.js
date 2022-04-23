@@ -1,13 +1,13 @@
 {
   "name": "equation-connect",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "prettier --check src",
-    "format": "prettier --write src",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
     "build": "tsc"
   },
   "files": [
