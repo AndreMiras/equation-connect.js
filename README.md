@@ -16,6 +16,7 @@ The library is also compatible with
 since it uses the same infrastructure, but different connection paramters.
 
 ## Motivations
+
 - providing an [open source web alternative](https://github.com/AndreMiras/equation-connect)
   to the proprietary mobile app
 - remote backlight setup
@@ -23,12 +24,15 @@ since it uses the same infrastructure, but different connection paramters.
 - improving the interoperability (Nest, HomeAssistant...)
 
 ## Install
+
 ```sh
 yarn add equation-connect
 ```
 
 ## Usage
+
 Here's a basic example for logging and retrieving installations information.
+
 ```js
 import { login, getInstallations } from "equation-connect";
 
@@ -39,5 +43,6 @@ const showInstallations = async (email, password) => {
 };
 showInstallations(process.env.EMAIL, process.env.PASSWORD);
 ```
+
 Explore the documentation for more:
 <https://andremiras.github.io/equation-connect.js>
