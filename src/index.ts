@@ -32,6 +32,7 @@ export {
   setDevicePreset,
   setDeviceBacklight,
   setDeviceBacklightOn,
+  setDeviceNominalPower,
   setZonePreset,
   updateDevice,
   updateDeviceTemperature,

@@ -204,6 +204,15 @@ const setDeviceBacklightOn = (id: string, backlight: number): void => {
 };
 
 /**
+ * Change radiator nominal power.
+ *
+ * @param nominal power in watts, e.g. 750, 1250.
+ */
+const setDeviceNominalPower = (id: string, nominal_power: number): void => {
+  updateDevice(id, { nominal_power });
+};
+
+/**
  * Returns the preset that's currently matching with the zone data as well as
  * with the devices part of the zone otherwise returns null.
  * This means if the zone has a `DeviceStatus.Comfort`, but only one of the
@@ -295,6 +304,7 @@ export {
   getZonePreset,
   setDeviceBacklight,
   setDeviceBacklightOn,
+  setDeviceNominalPower,
   setDevicePower,
   setDevicePowerOff,
   setDevicePowerOn,
