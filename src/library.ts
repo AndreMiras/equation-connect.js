@@ -45,9 +45,9 @@ const firebaseConfigs = {
   [FirebaseConfig.EquationConnect]: equationConnectConfig,
   [FirebaseConfig.RointeConnect]: rointeConnectConfig,
 };
-var app: FirebaseApp | null = null;
-var auth: Auth | null = null;
-var database: Database | null = null;
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
+let database: Database | null = null;
 
 /**
  * Initializes the firebase app then set and returns both `app` and `auth` global variables.
@@ -253,7 +253,9 @@ const setZonePreset = async (
     status,
   };
   const devices = zone.devices || {};
-  Object.keys(devices).forEach((deviceId) => setDevicePreset(deviceId, status));
+  await Promise.all(
+    Object.keys(devices).map((deviceId) => setDevicePreset(deviceId, status))
+  );
   updateZone(installationId, id, { ...data });
 };
 
