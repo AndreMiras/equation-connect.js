@@ -39,10 +39,13 @@ enum DeviceStatus {
   Ice = "ice",
   Eco = "eco",
   Comfort = "comfort",
+  Sleep = "off",
+  NoStatus = "none",
 }
 
 enum DeviceMode {
   Manual = "manual",
+  Auto = "auto",
 }
 
 interface DeviceDataType {
@@ -124,6 +127,8 @@ export type {
   InstallationType,
   InstallationsType,
   DeviceType,
+  DeviceFirmwareType,
+  DeviceStatsType,
 };
 
 export { DeviceDataType, DeviceStatus, DeviceMode, FirebaseConfig };

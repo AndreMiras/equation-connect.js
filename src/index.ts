@@ -1,6 +1,8 @@
 // Types
 export type {
   DeviceDataType,
+  DeviceFirmwareType,
+  DeviceStatsType,
   ZoneOverviewType,
   ZonesOverviewType,
   InstallationType,
@@ -19,6 +21,7 @@ export {
   userByUidPath,
   installationsPath,
   installationByIdPath,
+  installationZonesPath,
   deviceByIdPath,
   deviceDataByIdPath,
   zoneByIdPath,

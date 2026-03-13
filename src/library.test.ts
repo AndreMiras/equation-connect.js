@@ -8,6 +8,7 @@ import {
   zoneByIdPath,
   createClient,
 } from "./library";
+import { DeviceMode, DeviceStatus } from "./types";
 import {
   update,
   child,
@@ -80,6 +81,23 @@ describe("library", () => {
       expect(zoneByIdPath("inst-1", "zone-1")).toBe(
         "installations2/inst-1/zones/zone-1"
       );
+    });
+  });
+
+  describe("DeviceMode", () => {
+    it("has Manual and Auto values", () => {
+      expect(DeviceMode.Manual).toBe("manual");
+      expect(DeviceMode.Auto).toBe("auto");
+    });
+  });
+
+  describe("DeviceStatus", () => {
+    it("has all five status values", () => {
+      expect(DeviceStatus.Ice).toBe("ice");
+      expect(DeviceStatus.Eco).toBe("eco");
+      expect(DeviceStatus.Comfort).toBe("comfort");
+      expect(DeviceStatus.Sleep).toBe("off");
+      expect(DeviceStatus.NoStatus).toBe("none");
     });
   });
 
@@ -413,6 +431,229 @@ describe("library", () => {
         await client.setZonePreset("inst-1", "zone-1", "comfort" as any);
         // device preset update + zone update = 2
         expect(update).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("setDeviceTimer", () => {
+      it("updates device with timer payload", () => {
+        client.setDeviceTimer("dev-1", true, 25, 3600);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          timer_mode: true,
+          timer_temp: 25,
+          timer_time: 3600,
+        });
+      });
+    });
+
+    describe("setDeviceWindowOpenMode", () => {
+      it("updates device with windows_open_mode", () => {
+        client.setDeviceWindowOpenMode("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          windows_open_mode: true,
+        });
+      });
+    });
+
+    describe("setDevicePIRMode", () => {
+      it("updates device with pir_mode", () => {
+        client.setDevicePIRMode("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          pir_mode: true,
+        });
+      });
+    });
+
+    describe("setDeviceIceMode", () => {
+      it("updates device with ice_mode", () => {
+        client.setDeviceIceMode("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          ice_mode: true,
+        });
+      });
+    });
+
+    describe("setDeviceBlockLocal", () => {
+      it("updates device with block_local", () => {
+        client.setDeviceBlockLocal("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          block_local: true,
+        });
+      });
+    });
+
+    describe("setDeviceBlockRemote", () => {
+      it("updates device with block_remote", () => {
+        client.setDeviceBlockRemote("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          block_remote: true,
+        });
+      });
+    });
+
+    describe("setDeviceBuzzer", () => {
+      it("updates device with buzzer", () => {
+        client.setDeviceBuzzer("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          buzzer: true,
+        });
+      });
+    });
+
+    describe("setDeviceUserMode", () => {
+      it("updates device with user mode payload", () => {
+        client.setDeviceUserMode("dev-1", true, 15, 25, "1234");
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          user_mode: true,
+          um_min_temp: 15,
+          um_max_temp: 25,
+          um_password: "1234",
+        });
+      });
+    });
+
+    describe("setDevicePilotMode", () => {
+      it("updates device with pilot_mode", () => {
+        client.setDevicePilotMode("dev-1", true);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          pilot_mode: true,
+        });
+      });
+    });
+
+    describe("setDeviceMode", () => {
+      it("updates device with mode", () => {
+        client.setDeviceMode("dev-1", DeviceMode.Auto);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          mode: "auto",
+        });
+      });
+
+      it("sets manual mode", () => {
+        client.setDeviceMode("dev-1", DeviceMode.Manual);
+        expect(update).toHaveBeenCalledWith(expect.anything(), {
+          mode: "manual",
+        });
+      });
+    });
+
+    describe("setZoneMode", () => {
+      it("sets mode on all devices in zone and updates zone", async () => {
+        const mockZone = { devices: { "dev-1": true, "dev-2": true } };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneMode("inst-1", "zone-1", DeviceMode.Auto);
+        // 2 device mode updates + 1 zone update = 3
+        expect(update).toHaveBeenCalledTimes(3);
+      });
+
+      it("handles zone with no devices", async () => {
+        const mockZone = {};
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneMode("inst-1", "zone-1", DeviceMode.Auto);
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("setZoneIceMode", () => {
+      it("sets ice_mode on all devices and updates zone", async () => {
+        const mockZone = { devices: { "dev-1": true } };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneIceMode("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("setZoneBlockLocal", () => {
+      it("sets block_local on all devices and updates zone", async () => {
+        const mockZone = { devices: { "dev-1": true, "dev-2": true } };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBlockLocal("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(3);
+      });
+    });
+
+    describe("setZoneBlockRemote", () => {
+      it("sets block_remote on all devices and updates zone", async () => {
+        const mockZone = { devices: { "dev-1": true } };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBlockRemote("inst-1", "zone-1", false);
+        expect(update).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("setZoneBuzzer", () => {
+      it("sets buzzer on all devices and updates zone", async () => {
+        const mockZone = { devices: { "dev-1": true } };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBuzzer("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe("getInstallation", () => {
+      it("returns installation data for given id", async () => {
+        const mockInstallation = {
+          name: "Home",
+          power: true,
+          zones: {},
+        };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockInstallation,
+        } as any);
+        const result = await client.getInstallation("inst-1");
+        expect(child).toHaveBeenCalledWith(
+          expect.anything(),
+          "installations2/inst-1"
+        );
+        expect(result).toEqual(mockInstallation);
+      });
+    });
+
+    describe("setInstallationPower", () => {
+      it("fans out power to all zones and devices then updates installation", async () => {
+        const mockInstallation = {
+          name: "Home",
+          power: true,
+          zones: {
+            "zone-1": { devices: { "dev-1": true } },
+            "zone-2": { devices: { "dev-2": true } },
+          },
+        };
+        // getInstallation
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockInstallation,
+        } as any);
+        // setZonePower reads zone for each zone
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => ({ devices: { "dev-1": true } }),
+        } as any);
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => ({ devices: { "dev-2": true } }),
+        } as any);
+        await client.setInstallationPower("inst-1", false);
+        // 2 device updates + 2 zone updates + 1 installation update = 5
+        expect(update).toHaveBeenCalledTimes(5);
+      });
+
+      it("handles installation with no zones", async () => {
+        const mockInstallation = { name: "Empty", power: true };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockInstallation,
+        } as any);
+        await client.setInstallationPower("inst-1", false);
+        // Only installation update
+        expect(update).toHaveBeenCalledTimes(1);
       });
     });
   });
