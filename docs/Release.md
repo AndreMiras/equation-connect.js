@@ -2,33 +2,37 @@
 
 This is documenting the release process.
 
-## Git flow
-
-Start the release with git flow:
+We're also using [semantic versioning](https://semver.org/) where `major.minor.patch` should be set accordingly.
 
 ```sh
-git flow release start MAJOR.MINOR.PATCH
+VERSION=major.minor.patch
 ```
 
-Update the `version` from <package.json>.
-Then commit and finish release.
+## Update package.json and tag
+
+Update the [package.json](../package.json) `version` to match the new release version.
 
 ```sh
-git commit -a -m ":bookmark: MAJOR.MINOR.PATCH"
-git flow release finish
+sed --regexp-extended 's/"version": "(.+)"/"version": "'$VERSION'"/' --in-place package.json
 ```
 
-Push everything, make sure tags are also pushed:
+Then commit and tag:
+
+```sh
+git commit -a -m ":bookmark: $VERSION"
+git tag -a $VERSION -m ":bookmark: $VERSION"
+```
+
+Push everything including tags:
 
 ```sh
 git push
-git push origin main:main
 git push --tags
 ```
 
 ## Publish to npm
 
-Publication to npm happens automatically from GitHub actions on push to main.
+Publication to npm happens automatically from GitHub Actions on tag push.
 Alternatively it can be done manually via:
 
 ```sh
