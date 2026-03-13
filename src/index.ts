@@ -1,3 +1,4 @@
+// Types
 export type {
   DeviceDataType,
   ZoneOverviewType,
@@ -6,37 +7,19 @@ export type {
   InstallationsType,
 } from "./types";
 
+// Enums
 export { DeviceMode, DeviceStatus, DeviceType, FirebaseConfig } from "./types";
 
+// Client factory + type
+export { createClient } from "./library";
+export type { Client } from "./library";
+
+// Pure path helpers (no Firebase dependency)
 export {
-  auth,
-  database,
+  userByUidPath,
+  installationsPath,
+  installationByIdPath,
   deviceByIdPath,
   deviceDataByIdPath,
-  init,
-  installationByIdPath,
-  installationsPath,
-  login,
-  logout,
-  getInstallations,
-  getUser,
-  getDevice,
-  getZone,
-  getZonePreset,
-  setDevicePower,
-  setDevicePowerOff,
-  setDevicePowerOn,
-  setZonePower,
-  setZonePowerOff,
-  setZonePowerOn,
-  setDevicePreset,
-  setDeviceBacklight,
-  setDeviceBacklightOn,
-  setDeviceNominalPower,
-  setZonePreset,
-  updateDevice,
-  updateDeviceTemperature,
-  updateZone,
-  userByUidPath,
   zoneByIdPath,
 } from "./library";
