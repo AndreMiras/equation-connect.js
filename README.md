@@ -1,7 +1,7 @@
 # Equation Connect
 
-[![Tests](https://github.com/AndreMiras/equation-connect.js/workflows/Tests/badge.svg?branch=develop)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/tests.yml)
-[![Documentation](https://github.com/AndreMiras/equation-connect.js/workflows/Documentation/badge.svg?branch=develop)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/documentation.yml)
+[![Tests](https://github.com/AndreMiras/equation-connect.js/workflows/Tests/badge.svg)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/tests.yml)
+[![Documentation](https://github.com/AndreMiras/equation-connect.js/workflows/Documentation/badge.svg)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/documentation.yml)
 [![npm version](https://badge.fury.io/js/equation-connect.svg)](https://badge.fury.io/js/equation-connect)
 
 This is a library for the [Reverse Engineered](docs/ReverseEngineering.md)
