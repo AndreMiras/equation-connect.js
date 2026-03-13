@@ -20,6 +20,9 @@
   },
   "author": "Andre Miras",
   "license": "ISC",
+  "engines": {
+    "node": ">=20"
+  },
   "bugs": {
     "url": "https://github.com/AndreMiras/equation-connect.js/issues"
   },
