@@ -2,8 +2,7 @@ name: Documentation
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 jobs:
   deploy:
@@ -12,6 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
       - name: git config
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           git config user.name documentation-deploy-action
           git config user.email documentation-deploy-action@@users.noreply.github.com
@@ -19,6 +19,7 @@ jobs:
       - run: yarn install
       - run: yarn typedoc src/index.ts --out /tmp/docs
       - name: deploy documentation
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           git ls-remote --exit-code . origin/gh-pages \
             && git checkout -b gh-pages \
