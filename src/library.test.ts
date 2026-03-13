@@ -3,6 +3,7 @@ import {
   userByUidPath,
   installationsPath,
   installationByIdPath,
+  installationZonesPath,
   deviceByIdPath,
   deviceDataByIdPath,
   zoneByIdPath,
@@ -61,6 +62,14 @@ describe("library", () => {
   describe("installationByIdPath", () => {
     it("returns installation path for given id", () => {
       expect(installationByIdPath("inst-1")).toBe("installations2/inst-1");
+    });
+  });
+
+  describe("installationZonesPath", () => {
+    it("returns zones path for given installation id", () => {
+      expect(installationZonesPath("inst-1")).toBe(
+        "installations2/inst-1/zones"
+      );
     });
   });
 
@@ -417,6 +426,16 @@ describe("library", () => {
         ).rejects.toThrow();
       });
 
+      it("handles zone with no devices", async () => {
+        const mockZone = { comfort: 21 };
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZonePreset("inst-1", "zone-1", "comfort" as any);
+        // Only zone update, no device updates
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+
       it("sets preset on all devices and updates zone", async () => {
         const mockZone = {
           comfort: 21,
@@ -558,6 +577,15 @@ describe("library", () => {
     });
 
     describe("setZoneIceMode", () => {
+      it("handles zone with no devices", async () => {
+        const mockZone = {};
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneIceMode("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+
       it("sets ice_mode on all devices and updates zone", async () => {
         const mockZone = { devices: { "dev-1": true } };
         vi.mocked(get).mockResolvedValueOnce({
@@ -569,6 +597,15 @@ describe("library", () => {
     });
 
     describe("setZoneBlockLocal", () => {
+      it("handles zone with no devices", async () => {
+        const mockZone = {};
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBlockLocal("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+
       it("sets block_local on all devices and updates zone", async () => {
         const mockZone = { devices: { "dev-1": true, "dev-2": true } };
         vi.mocked(get).mockResolvedValueOnce({
@@ -580,6 +617,15 @@ describe("library", () => {
     });
 
     describe("setZoneBlockRemote", () => {
+      it("handles zone with no devices", async () => {
+        const mockZone = {};
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBlockRemote("inst-1", "zone-1", false);
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+
       it("sets block_remote on all devices and updates zone", async () => {
         const mockZone = { devices: { "dev-1": true } };
         vi.mocked(get).mockResolvedValueOnce({
@@ -591,6 +637,15 @@ describe("library", () => {
     });
 
     describe("setZoneBuzzer", () => {
+      it("handles zone with no devices", async () => {
+        const mockZone = {};
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => mockZone,
+        } as any);
+        await client.setZoneBuzzer("inst-1", "zone-1", true);
+        expect(update).toHaveBeenCalledTimes(1);
+      });
+
       it("sets buzzer on all devices and updates zone", async () => {
         const mockZone = { devices: { "dev-1": true } };
         vi.mocked(get).mockResolvedValueOnce({

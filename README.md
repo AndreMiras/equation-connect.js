@@ -1,6 +1,7 @@
 # Equation Connect
 
 [![Tests](https://github.com/AndreMiras/equation-connect.js/workflows/Tests/badge.svg)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/tests.yml)
+[![codecov](https://codecov.io/gh/AndreMiras/equation-connect.js/branch/main/graph/badge.svg?token=CHH2UI51KI)](https://codecov.io/gh/AndreMiras/equation-connect.js)
 [![Documentation](https://github.com/AndreMiras/equation-connect.js/workflows/Documentation/badge.svg)](https://github.com/AndreMiras/equation-connect.js/actions/workflows/documentation.yml)
 [![npm version](https://badge.fury.io/js/equation-connect.svg)](https://badge.fury.io/js/equation-connect)
 
