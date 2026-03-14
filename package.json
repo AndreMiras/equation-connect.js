@@ -4,12 +4,16 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "equation-connect": "dist/cli.js"
+  },
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "lint": "prettier --check .",
     "format": "prettier --write .",
-    "build": "tsc"
+    "build": "tsc",
+    "cli": "tsx src/cli.ts"
   },
   "files": [
     "/dist"
@@ -30,11 +34,15 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.0",
     "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
     "typedoc": "^0.22.10",
     "typescript": "^4.5.2",
     "vitest": "^4.1.0"
   },
   "dependencies": {
     "firebase": "^9.5.0"
+  },
+  "optionalDependencies": {
+    "commander": "^14.0.3"
   }
 }

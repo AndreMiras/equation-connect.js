@@ -35,11 +35,12 @@ yarn add equation-connect
 Here's a basic example for logging and retrieving installations information.
 
 ```js
-import { login, getInstallations } from "equation-connect";
+import { createClient } from "equation-connect";
 
 const showInstallations = async (email, password) => {
-  const user = await login(email, password);
-  const installations = await getInstallations(user.uid);
+  const client = createClient();
+  const user = await client.login(email, password);
+  const installations = await client.getInstallations(user.uid);
   console.log(installations);
 };
 showInstallations(process.env.EMAIL, process.env.PASSWORD);
@@ -47,3 +48,29 @@ showInstallations(process.env.EMAIL, process.env.PASSWORD);
 
 Explore the documentation for more:
 <https://andremiras.github.io/equation-connect.js>
+
+## CLI
+
+The library includes a CLI tool that is useful for debugging.
+
+```sh
+yarn cli login --email $EMAIL --password $PASSWORD
+yarn cli getInstallations --email $EMAIL --password $PASSWORD
+yarn cli getDevice --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID
+yarn cli setDevicePower --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID --value true
+yarn cli setDevicePreset --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID --value comfort
+yarn cli setDeviceTemperature --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID --value 20
+yarn cli setDeviceMode --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID --value manual
+```
+
+Or with `npx` once the library is installed:
+
+```sh
+npx equation-connect getDevice --email $EMAIL --password $PASSWORD --device-id $DEVICE_ID
+```
+
+Use `--config rointe` to connect to Rointe instead of Equation:
+
+```sh
+yarn cli login --email $EMAIL --password $PASSWORD --config rointe
+```

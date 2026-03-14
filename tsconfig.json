@@ -4,6 +4,8 @@
     "target": "es2015",
     "declaration": true,
     "outDir": "./dist",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "strict": true,
     "preserveConstEnums": true,
     "skipLibCheck": true
