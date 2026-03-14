@@ -68,7 +68,7 @@ describe("library", () => {
   describe("installationZonesPath", () => {
     it("returns zones path for given installation id", () => {
       expect(installationZonesPath("inst-1")).toBe(
-        "installations2/inst-1/zones"
+        "installations2/inst-1/zones",
       );
     });
   });
@@ -88,7 +88,7 @@ describe("library", () => {
   describe("zoneByIdPath", () => {
     it("returns zone path for given installation and zone id", () => {
       expect(zoneByIdPath("inst-1", "zone-1")).toBe(
-        "installations2/inst-1/zones/zone-1"
+        "installations2/inst-1/zones/zone-1",
       );
     });
   });
@@ -123,7 +123,7 @@ describe("library", () => {
         client.updateDevice("dev-1", { temp: 20, power: true });
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "devices/dev-1/data"
+          "devices/dev-1/data",
         );
         expect(update).toHaveBeenCalledWith(expect.anything(), {
           temp: 20,
@@ -137,7 +137,7 @@ describe("library", () => {
         client.updateDeviceTemperature("dev-1", 22);
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "devices/dev-1/data"
+          "devices/dev-1/data",
         );
         expect(update).toHaveBeenCalledWith(expect.anything(), { temp: 22 });
       });
@@ -209,7 +209,7 @@ describe("library", () => {
         client.updateZone("inst-1", "zone-1", { power: true });
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "installations2/inst-1/zones/zone-1"
+          "installations2/inst-1/zones/zone-1",
         );
         expect(update).toHaveBeenCalledWith(expect.anything(), {
           power: true,
@@ -277,7 +277,7 @@ describe("library", () => {
         const result = await client.getZone("inst-1", "zone-1");
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "installations2/inst-1/zones/zone-1"
+          "installations2/inst-1/zones/zone-1",
         );
         expect(result).toEqual(mockZone);
       });
@@ -293,7 +293,7 @@ describe("library", () => {
         expect(signInWithEmailAndPassword).toHaveBeenCalledWith(
           expect.anything(),
           "test@example.com",
-          "password123"
+          "password123",
         );
         expect(result).toEqual(mockUser);
       });
@@ -357,7 +357,7 @@ describe("library", () => {
         await client.setZonePower("inst-1", "zone-1", true);
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "installations2/inst-1/zones/zone-1"
+          "installations2/inst-1/zones/zone-1",
         );
         // 2 device power updates + 1 zone update = 3
         expect(update).toHaveBeenCalledTimes(3);
@@ -422,7 +422,7 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await expect(
-          client.setZonePreset("inst-1", "zone-1", "ice" as any)
+          client.setZonePreset("inst-1", "zone-1", "ice" as any),
         ).rejects.toThrow();
       });
 
@@ -669,7 +669,7 @@ describe("library", () => {
         const result = await client.getInstallation("inst-1");
         expect(child).toHaveBeenCalledWith(
           expect.anything(),
-          "installations2/inst-1"
+          "installations2/inst-1",
         );
         expect(result).toEqual(mockInstallation);
       });

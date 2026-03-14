@@ -69,7 +69,7 @@ const installationZonesPath = (installationId: string) =>
 const login = async (
   deps: FirebaseContext,
   email: string,
-  password: string
+  password: string,
 ) => {
   const { user } = await signInWithEmailAndPassword(deps.auth, email, password);
   return user;
@@ -86,11 +86,11 @@ const getUser = async (deps: FirebaseContext, uid: string) => {
 
 const getInstallations = async (
   deps: FirebaseContext,
-  uid: string
+  uid: string,
 ): Promise<InstallationsType> => {
   const path = installationsPath;
   const snapshot = await get(
-    query(ref(deps.database, path), orderByChild("userid"), equalTo(uid))
+    query(ref(deps.database, path), orderByChild("userid"), equalTo(uid)),
   );
   const installations = snapshot.val();
   return installations;
@@ -98,7 +98,7 @@ const getInstallations = async (
 
 const getDevice = async (
   deps: FirebaseContext,
-  id: string
+  id: string,
 ): Promise<DeviceType> => {
   const path = deviceByIdPath(id);
   const snapshot = await get(child(ref(deps.database), path));
@@ -109,7 +109,7 @@ const getDevice = async (
 const getZone = async (
   deps: FirebaseContext,
   installationId: string,
-  id: string
+  id: string,
 ): Promise<ZoneOverviewType> => {
   const path = zoneByIdPath(installationId, id);
   const snapshot = await get(child(ref(deps.database), path));
@@ -119,7 +119,7 @@ const getZone = async (
 
 const getInstallation = async (
   deps: FirebaseContext,
-  id: string
+  id: string,
 ): Promise<InstallationType> => {
   const path = installationByIdPath(id);
   const snapshot = await get(child(ref(deps.database), path));
@@ -147,7 +147,7 @@ const updateZone = (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  data: any
+  data: any,
 ): void => {
   const path = zoneByIdPath(installationId, id);
   const reference = child(ref(deps.database), path);
@@ -157,7 +157,7 @@ const updateZone = (
 const updateDeviceTemperature = (
   deps: FirebaseContext,
   id: string,
-  temp: number
+  temp: number,
 ): void => {
   updateDevice(deps, id, { temp });
 };
@@ -165,7 +165,7 @@ const updateDeviceTemperature = (
 const setDevicePreset = async (
   deps: FirebaseContext,
   id: string,
-  status: DeviceStatus
+  status: DeviceStatus,
 ): Promise<void> => {
   const device = await getDevice(deps, id);
   const temp = device.data[status as keyof typeof device.data];
@@ -186,7 +186,7 @@ const setDevicePreset = async (
 const setDevicePower = (
   deps: FirebaseContext,
   id: string,
-  power: boolean
+  power: boolean,
 ): void => {
   updateDevice(deps, id, { power });
 };
@@ -212,7 +212,7 @@ const setDevicePowerOff = (deps: FirebaseContext, id: string): void => {
 const setDeviceBacklight = (
   deps: FirebaseContext,
   id: string,
-  backlight: number
+  backlight: number,
 ): void => {
   updateDevice(deps, id, { backlight });
 };
@@ -224,7 +224,7 @@ const setDeviceBacklight = (
 const setDeviceBacklightOn = (
   deps: FirebaseContext,
   id: string,
-  backlight: number
+  backlight: number,
 ): void => {
   updateDevice(deps, id, { backlight_on: backlight });
 };
@@ -237,7 +237,7 @@ const setDeviceBacklightOn = (
 const setDeviceNominalPower = (
   deps: FirebaseContext,
   id: string,
-  nominal_power: number
+  nominal_power: number,
 ): void => {
   updateDevice(deps, id, { nominal_power });
 };
@@ -252,13 +252,13 @@ const setDeviceNominalPower = (
 const getZonePreset = async (
   deps: FirebaseContext,
   installationId: string,
-  id: string
+  id: string,
 ): Promise<DeviceStatus | null> => {
   const zone = await getZone(deps, installationId, id);
   const status = zone.status;
   const deviceIds = zone.devices || {};
   const devices: DeviceType[] = await Promise.all(
-    Object.keys(deviceIds).map((deviceId) => getDevice(deps, deviceId))
+    Object.keys(deviceIds).map((deviceId) => getDevice(deps, deviceId)),
   );
   const statusList = devices.map((device) => device.data.status);
   const allEqual = statusList.every((val) => val === status);
@@ -269,13 +269,13 @@ const setZonePreset = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  status: DeviceStatus
+  status: DeviceStatus,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   // for some reason `zone.ice` isn't defined in the `installation2` response
   assert(
     status !== DeviceStatus.Ice,
-    `The ${DeviceStatus.Ice} isn't available for zones`
+    `The ${DeviceStatus.Ice} isn't available for zones`,
   );
   const temp = zone[status as keyof typeof zone];
   const data = {
@@ -287,8 +287,8 @@ const setZonePreset = async (
   const devices = zone.devices || {};
   await Promise.all(
     Object.keys(devices).map((deviceId) =>
-      setDevicePreset(deps, deviceId, status)
-    )
+      setDevicePreset(deps, deviceId, status),
+    ),
   );
   updateZone(deps, installationId, id, { ...data });
 };
@@ -302,12 +302,12 @@ const setZonePower = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  power: boolean
+  power: boolean,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDevicePower(deps, deviceId, power)
+    setDevicePower(deps, deviceId, power),
   );
   updateZone(deps, installationId, id, { power });
 };
@@ -318,7 +318,7 @@ const setZonePower = async (
 const setZonePowerOn = (
   deps: FirebaseContext,
   installationId: string,
-  id: string
+  id: string,
 ): void => {
   updateZone(deps, installationId, id, { power: true });
 };
@@ -329,7 +329,7 @@ const setZonePowerOn = (
 const setZonePowerOff = (
   deps: FirebaseContext,
   installationId: string,
-  id: string
+  id: string,
 ): void => {
   updateZone(deps, installationId, id, { power: false });
 };
@@ -340,7 +340,7 @@ const setDeviceTimer = (
   id: string,
   timerMode: boolean,
   timerTemp: number,
-  timerTime: number
+  timerTime: number,
 ): void => {
   updateDevice(deps, id, {
     timer_mode: timerMode,
@@ -353,7 +353,7 @@ const setDeviceTimer = (
 const setDeviceWindowOpenMode = (
   deps: FirebaseContext,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   updateDevice(deps, id, { windows_open_mode: enabled });
 };
@@ -362,7 +362,7 @@ const setDeviceWindowOpenMode = (
 const setDevicePIRMode = (
   deps: FirebaseContext,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   updateDevice(deps, id, { pir_mode: enabled });
 };
@@ -371,7 +371,7 @@ const setDevicePIRMode = (
 const setDeviceIceMode = (
   deps: FirebaseContext,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   updateDevice(deps, id, { ice_mode: enabled });
 };
@@ -380,7 +380,7 @@ const setDeviceIceMode = (
 const setDeviceBlockLocal = (
   deps: FirebaseContext,
   id: string,
-  blocked: boolean
+  blocked: boolean,
 ): void => {
   updateDevice(deps, id, { block_local: blocked });
 };
@@ -389,7 +389,7 @@ const setDeviceBlockLocal = (
 const setDeviceBlockRemote = (
   deps: FirebaseContext,
   id: string,
-  blocked: boolean
+  blocked: boolean,
 ): void => {
   updateDevice(deps, id, { block_remote: blocked });
 };
@@ -398,7 +398,7 @@ const setDeviceBlockRemote = (
 const setDeviceBuzzer = (
   deps: FirebaseContext,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   updateDevice(deps, id, { buzzer: enabled });
 };
@@ -410,7 +410,7 @@ const setDeviceUserMode = (
   userMode: boolean,
   umMinTemp: number,
   umMaxTemp: number,
-  umPassword: string
+  umPassword: string,
 ): void => {
   updateDevice(deps, id, {
     user_mode: userMode,
@@ -424,7 +424,7 @@ const setDeviceUserMode = (
 const setDevicePilotMode = (
   deps: FirebaseContext,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): void => {
   updateDevice(deps, id, { pilot_mode: enabled });
 };
@@ -433,7 +433,7 @@ const setDevicePilotMode = (
 const setDeviceMode = (
   deps: FirebaseContext,
   id: string,
-  mode: DeviceMode
+  mode: DeviceMode,
 ): void => {
   updateDevice(deps, id, { mode });
 };
@@ -443,12 +443,12 @@ const setZoneMode = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  mode: DeviceMode
+  mode: DeviceMode,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDeviceMode(deps, deviceId, mode)
+    setDeviceMode(deps, deviceId, mode),
   );
   updateZone(deps, installationId, id, { mode });
 };
@@ -458,12 +458,12 @@ const setZoneIceMode = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDeviceIceMode(deps, deviceId, enabled)
+    setDeviceIceMode(deps, deviceId, enabled),
   );
   updateZone(deps, installationId, id, { ice_mode: enabled });
 };
@@ -473,12 +473,12 @@ const setZoneBlockLocal = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  blocked: boolean
+  blocked: boolean,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDeviceBlockLocal(deps, deviceId, blocked)
+    setDeviceBlockLocal(deps, deviceId, blocked),
   );
   updateZone(deps, installationId, id, { block_local: blocked });
 };
@@ -488,12 +488,12 @@ const setZoneBlockRemote = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  blocked: boolean
+  blocked: boolean,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDeviceBlockRemote(deps, deviceId, blocked)
+    setDeviceBlockRemote(deps, deviceId, blocked),
   );
   updateZone(deps, installationId, id, { block_remote: blocked });
 };
@@ -503,12 +503,12 @@ const setZoneBuzzer = async (
   deps: FirebaseContext,
   installationId: string,
   id: string,
-  enabled: boolean
+  enabled: boolean,
 ): Promise<void> => {
   const zone = await getZone(deps, installationId, id);
   const devices = zone.devices || {};
   Object.keys(devices).forEach((deviceId) =>
-    setDeviceBuzzer(deps, deviceId, enabled)
+    setDeviceBuzzer(deps, deviceId, enabled),
   );
   updateZone(deps, installationId, id, { buzzer: enabled });
 };
@@ -520,14 +520,14 @@ const setZoneBuzzer = async (
 const setInstallationPower = async (
   deps: FirebaseContext,
   installationId: string,
-  power: boolean
+  power: boolean,
 ): Promise<void> => {
   const installation = await getInstallation(deps, installationId);
   const zones = installation.zones || {};
   await Promise.all(
     Object.keys(zones).map((zoneId) =>
-      setZonePower(deps, installationId, zoneId, power)
-    )
+      setZonePower(deps, installationId, zoneId, power),
+    ),
   );
   const path = installationByIdPath(installationId);
   const reference = child(ref(deps.database), path);
@@ -537,7 +537,7 @@ const setInstallationPower = async (
 // Client factory
 
 const createClient = (
-  config: FirebaseConfig = FirebaseConfig.EquationConnect
+  config: FirebaseConfig = FirebaseConfig.EquationConnect,
 ) => {
   const firebaseConfig = firebaseConfigs[config];
   const app = initializeApp(firebaseConfig);
@@ -583,7 +583,7 @@ const createClient = (
       id: string,
       timerMode: boolean,
       timerTemp: number,
-      timerTime: number
+      timerTime: number,
     ) => setDeviceTimer(deps, id, timerMode, timerTemp, timerTime),
     setDeviceWindowOpenMode: (id: string, enabled: boolean) =>
       setDeviceWindowOpenMode(deps, id, enabled),
@@ -602,7 +602,7 @@ const createClient = (
       userMode: boolean,
       umMinTemp: number,
       umMaxTemp: number,
-      umPassword: string
+      umPassword: string,
     ) =>
       setDeviceUserMode(deps, id, userMode, umMinTemp, umMaxTemp, umPassword),
     setDevicePilotMode: (id: string, enabled: boolean) =>
@@ -618,7 +618,7 @@ const createClient = (
     setZoneBlockRemote: (
       installationId: string,
       id: string,
-      blocked: boolean
+      blocked: boolean,
     ) => setZoneBlockRemote(deps, installationId, id, blocked),
     setZoneBuzzer: (installationId: string, id: string, enabled: boolean) =>
       setZoneBuzzer(deps, installationId, id, enabled),
