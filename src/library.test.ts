@@ -14,6 +14,7 @@ import {
   update,
   child,
   get,
+  set,
   query,
   orderByChild,
   equalTo,
@@ -41,6 +42,7 @@ vi.mock("firebase/database", () => {
     child: mockChild,
     update: vi.fn(),
     get: vi.fn(),
+    set: vi.fn(),
     query: vi.fn(),
     orderByChild: vi.fn(),
     equalTo: vi.fn(),
@@ -305,6 +307,52 @@ describe("library", () => {
         vi.mocked(signOut).mockResolvedValueOnce(undefined);
         await client.logout();
         expect(signOut).toHaveBeenCalledWith(expect.anything());
+      });
+
+      it("cleans tokens when uid is provided", async () => {
+        const tokens = ["token-a", "token-b", "token-a"];
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => tokens,
+        } as any);
+        vi.mocked(signOut).mockResolvedValueOnce(undefined);
+        await client.logout("uid-123");
+        expect(set).toHaveBeenCalledWith(expect.anything(), [
+          "token-a",
+          "token-b",
+        ]);
+        expect(signOut).toHaveBeenCalled();
+      });
+    });
+
+    describe("cleanUserTokens", () => {
+      it("deduplicates tokens in Firebase", async () => {
+        const tokens = ["a", "b", "a", "b", "b"];
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => tokens,
+        } as any);
+        await client.cleanUserTokens("uid-123");
+        expect(child).toHaveBeenCalledWith(
+          expect.anything(),
+          "users/uid-123/tokens",
+        );
+        expect(set).toHaveBeenCalledWith(expect.anything(), ["a", "b"]);
+      });
+
+      it("skips write when tokens are already unique", async () => {
+        const tokens = ["a", "b", "c"];
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => tokens,
+        } as any);
+        await client.cleanUserTokens("uid-123");
+        expect(set).not.toHaveBeenCalled();
+      });
+
+      it("skips write when no tokens exist", async () => {
+        vi.mocked(get).mockResolvedValueOnce({
+          val: () => null,
+        } as any);
+        await client.cleanUserTokens("uid-123");
+        expect(set).not.toHaveBeenCalled();
       });
     });
 

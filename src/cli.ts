@@ -60,7 +60,7 @@ const createProgram = (): Command => {
     const { client, user } = await initializeCommand(options);
     const userInfo = await client.getUser(user.uid);
     console.log(JSON.stringify({ uid: user.uid, ...userInfo }, null, 2));
-    await client.logout();
+    await client.logout(user.uid);
   });
 
   // Getter commands that only need auth
@@ -78,7 +78,7 @@ const createProgram = (): Command => {
       const { client, user } = await initializeCommand(options);
       const result = await getter(client, user.uid);
       console.log(JSON.stringify(result, null, 2));
-      await client.logout();
+      await client.logout(user.uid);
     });
   });
 
@@ -96,10 +96,10 @@ const createProgram = (): Command => {
         addAuthOptions(program.command(commandName).description(description)),
       ),
     ).action(async (options) => {
-      const { client } = await initializeCommand(options);
+      const { client, user } = await initializeCommand(options);
       const result = await getter(client, options.deviceId);
       console.log(JSON.stringify(result, null, 2));
-      await client.logout();
+      await client.logout(user.uid);
     });
   });
 
@@ -131,14 +131,14 @@ const createProgram = (): Command => {
         ),
       ),
     ).action(async (options) => {
-      const { client } = await initializeCommand(options);
+      const { client, user } = await initializeCommand(options);
       const result = await getter(
         client,
         options.installationId,
         options.zoneId,
       );
       console.log(JSON.stringify(result, null, 2));
-      await client.logout();
+      await client.logout(user.uid);
     });
   });
 
@@ -150,11 +150,11 @@ const createProgram = (): Command => {
       ).requiredOption("-v, --value <boolean>", "Power state (true or false)"),
     ),
   ).action(async (options) => {
-    const { client } = await initializeCommand(options);
+    const { client, user } = await initializeCommand(options);
     const power = options.value === "true";
     client.setDevicePower(options.deviceId, power);
     console.log(JSON.stringify({ power }, null, 2));
-    await client.logout();
+    await client.logout(user.uid);
   });
 
   // Command: setDevicePreset
@@ -167,11 +167,11 @@ const createProgram = (): Command => {
       ).requiredOption("-v, --value <preset>", "Preset (comfort, eco, ice)"),
     ),
   ).action(async (options) => {
-    const { client } = await initializeCommand(options);
+    const { client, user } = await initializeCommand(options);
     const status = options.value as DeviceStatus;
     await client.setDevicePreset(options.deviceId, status);
     console.log(JSON.stringify({ status }, null, 2));
-    await client.logout();
+    await client.logout(user.uid);
   });
 
   // Command: setDeviceTemperature
@@ -188,10 +188,10 @@ const createProgram = (): Command => {
       ),
     ),
   ).action(async (options) => {
-    const { client } = await initializeCommand(options);
+    const { client, user } = await initializeCommand(options);
     client.updateDeviceTemperature(options.deviceId, options.value);
     console.log(JSON.stringify({ temp: options.value }, null, 2));
-    await client.logout();
+    await client.logout(user.uid);
   });
 
   // Command: setDeviceMode
@@ -204,11 +204,11 @@ const createProgram = (): Command => {
       ).requiredOption("-v, --value <mode>", "Mode (manual or auto)"),
     ),
   ).action(async (options) => {
-    const { client } = await initializeCommand(options);
+    const { client, user } = await initializeCommand(options);
     const mode = options.value as DeviceMode;
     client.setDeviceMode(options.deviceId, mode);
     console.log(JSON.stringify({ mode }, null, 2));
-    await client.logout();
+    await client.logout(user.uid);
   });
 
   return program;

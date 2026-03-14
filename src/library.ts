@@ -7,6 +7,7 @@ import {
   query,
   orderByChild,
   ref,
+  set,
   update,
   Database,
 } from "firebase/database";
@@ -56,6 +57,7 @@ interface FirebaseContext {
 // Path helpers (pure functions, no deps needed)
 
 const userByUidPath = (uid: string) => `users/${uid}`;
+const userTokensPath = (uid: string) => `${userByUidPath(uid)}/tokens`;
 const installationsPath = "installations2";
 const installationByIdPath = (id: string) => `${installationsPath}/${id}`;
 const deviceByIdPath = (id: string) => `devices/${id}`;
@@ -76,7 +78,8 @@ const login = async (
   return user;
 };
 
-const logout = async (deps: FirebaseContext) => {
+const logout = async (deps: FirebaseContext, uid?: string) => {
+  if (uid) await cleanUserTokens(deps, uid);
   await signOut(deps.auth);
   await deleteApp(deps.app);
 };
@@ -86,6 +89,17 @@ const getUser = async (deps: FirebaseContext, uid: string) => {
   const snapshot = await get(child(ref(deps.database), path));
   const user = snapshot.val();
   return user;
+};
+
+/** Deduplicates the user's push notification tokens in Firebase. */
+const cleanUserTokens = async (deps: FirebaseContext, uid: string) => {
+  const path = userTokensPath(uid);
+  const snapshot = await get(child(ref(deps.database), path));
+  const tokens: string[] | null = snapshot.val();
+  if (!tokens) return;
+  const unique = [...new Set(tokens)];
+  if (unique.length === tokens.length) return;
+  await set(child(ref(deps.database), path), unique);
 };
 
 const getInstallations = async (
@@ -555,7 +569,8 @@ const createClient = (
     auth: deps.auth,
     database: deps.database,
     login: (email: string, password: string) => login(deps, email, password),
-    logout: () => logout(deps),
+    logout: (uid?: string) => logout(deps, uid),
+    cleanUserTokens: (uid: string) => cleanUserTokens(deps, uid),
     getUser: (uid: string) => getUser(deps, uid),
     getInstallations: (uid: string) => getInstallations(deps, uid),
     getDevice: (id: string) => getDevice(deps, id),
