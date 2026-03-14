@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { deleteApp, initializeApp } from "firebase/app";
 import {
   child,
   equalTo,
@@ -48,6 +48,7 @@ const firebaseConfigs = {
 };
 
 interface FirebaseContext {
+  app: ReturnType<typeof initializeApp>;
   auth: Auth;
   database: Database;
 }
@@ -75,7 +76,10 @@ const login = async (
   return user;
 };
 
-const logout = (deps: FirebaseContext) => signOut(deps.auth);
+const logout = async (deps: FirebaseContext) => {
+  await signOut(deps.auth);
+  await deleteApp(deps.app);
+};
 
 const getUser = async (deps: FirebaseContext, uid: string) => {
   const path = userByUidPath(uid);
@@ -542,6 +546,7 @@ const createClient = (
   const firebaseConfig = firebaseConfigs[config];
   const app = initializeApp(firebaseConfig);
   const deps: FirebaseContext = {
+    app,
     auth: getAuth(app),
     database: getDatabase(app),
   };

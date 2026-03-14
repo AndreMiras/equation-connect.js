@@ -23,6 +23,7 @@ import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 // Vitest hoists these to top of file
 vi.mock("firebase/app", () => ({
   initializeApp: vi.fn(() => ({})),
+  deleteApp: vi.fn(),
 }));
 
 vi.mock("firebase/auth", () => ({
