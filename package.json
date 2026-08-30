@@ -10,6 +10,8 @@
   "scripts": {
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:emulator": "firebase emulators:exec --project demo-equation-connect --only auth,database \"yarn test:emulator:run\"",
+    "test:emulator:run": "vitest run --config vitest.emulator.config.ts",
     "test:package": "node scripts/test-packed-package.mjs",
     "lint": "prettier --check .",
     "format": "prettier --write .",
@@ -34,6 +36,7 @@
   "homepage": "https://github.com/AndreMiras/equation-connect.js#readme",
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.0",
+    "firebase-tools": "15.28.2",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.19",
@@ -45,5 +48,9 @@
   },
   "optionalDependencies": {
     "commander": "^14.0.3"
+  },
+  "resolutions": {
+    "@google-cloud/cloud-sql-connector": "1.9.2",
+    "universal-analytics": "0.5.3"
   }
 }

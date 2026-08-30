@@ -1,0 +1,9 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "installations2": {
+      ".indexOn": "userid"
+    }
+  }
+}

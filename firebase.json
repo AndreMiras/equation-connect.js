@@ -1,0 +1,20 @@
+{
+  "database": [
+    {
+      "instance": "oem2-elife-cloud-prod-default-rtdb",
+      "rules": "test/firebase/database.rules.json"
+    }
+  ],
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "database": {
+      "port": 9000
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": false
+  }
+}
