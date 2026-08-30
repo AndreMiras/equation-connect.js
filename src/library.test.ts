@@ -19,6 +19,7 @@ import {
   orderByChild,
   equalTo,
 } from "firebase/database";
+import { deleteApp } from "firebase/app";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 // Vitest hoists these to top of file
@@ -48,6 +49,15 @@ vi.mock("firebase/database", () => {
     equalTo: vi.fn(),
   };
 });
+
+const getUpdateCalls = () =>
+  vi
+    .mocked(update)
+    .mock.calls.map(([reference, data]) => ({
+      path: (reference as { path: string }).path,
+      data,
+    }))
+    .sort((left, right) => left.path.localeCompare(right.path));
 
 describe("library", () => {
   describe("userByUidPath", () => {
@@ -303,10 +313,14 @@ describe("library", () => {
     });
 
     describe("logout", () => {
-      it("calls signOut", async () => {
+      it("signs out before deleting the Firebase app", async () => {
         vi.mocked(signOut).mockResolvedValueOnce(undefined);
         await client.logout();
         expect(signOut).toHaveBeenCalledWith(expect.anything());
+        expect(deleteApp).toHaveBeenCalledWith(expect.anything());
+        expect(vi.mocked(signOut).mock.invocationCallOrder[0]).toBeLessThan(
+          vi.mocked(deleteApp).mock.invocationCallOrder[0],
+        );
       });
 
       it("cleans tokens when uid is provided", async () => {
@@ -316,11 +330,18 @@ describe("library", () => {
         } as any);
         vi.mocked(signOut).mockResolvedValueOnce(undefined);
         await client.logout("uid-123");
-        expect(set).toHaveBeenCalledWith(expect.anything(), [
+        expect(set).toHaveBeenCalledWith({ path: "users/uid-123/tokens" }, [
           "token-a",
           "token-b",
         ]);
-        expect(signOut).toHaveBeenCalled();
+        expect(signOut).toHaveBeenCalledWith(expect.anything());
+        expect(deleteApp).toHaveBeenCalledWith(expect.anything());
+        expect(vi.mocked(set).mock.invocationCallOrder[0]).toBeLessThan(
+          vi.mocked(signOut).mock.invocationCallOrder[0],
+        );
+        expect(vi.mocked(signOut).mock.invocationCallOrder[0]).toBeLessThan(
+          vi.mocked(deleteApp).mock.invocationCallOrder[0],
+        );
       });
     });
 
@@ -408,8 +429,14 @@ describe("library", () => {
           expect.anything(),
           "installations2/inst-1/zones/zone-1",
         );
-        // 2 device power updates + 1 zone update = 3
-        expect(update).toHaveBeenCalledTimes(3);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { power: true } },
+          { path: "devices/dev-2/data", data: { power: true } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { power: true },
+          },
+        ]);
       });
 
       it("handles zone with no devices", async () => {
@@ -418,8 +445,22 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZonePower("inst-1", "zone-1", false);
-        // Only zone update, no device updates
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { power: false },
+          },
+        ]);
+      });
+
+      it("propagates a rejected zone read without writing", async () => {
+        const error = new Error("zone read failed");
+        vi.mocked(get).mockRejectedValueOnce(error);
+
+        await expect(
+          client.setZonePower("inst-1", "zone-1", true),
+        ).rejects.toBe(error);
+        expect(update).not.toHaveBeenCalled();
       });
     });
 
@@ -481,8 +522,17 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZonePreset("inst-1", "zone-1", "comfort" as any);
-        // Only zone update, no device updates
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: {
+              power: true,
+              mode: "manual",
+              temp: 21,
+              status: "comfort",
+            },
+          },
+        ]);
       });
 
       it("sets preset on all devices and updates zone", async () => {
@@ -497,8 +547,26 @@ describe("library", () => {
           .mockResolvedValueOnce({ val: () => mockZone } as any)
           .mockResolvedValueOnce({ val: () => mockDevice } as any);
         await client.setZonePreset("inst-1", "zone-1", "comfort" as any);
-        // device preset update + zone update = 2
-        expect(update).toHaveBeenCalledTimes(2);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "devices/dev-1/data",
+            data: {
+              power: true,
+              mode: "manual",
+              temp: 21,
+              status: "comfort",
+            },
+          },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: {
+              power: true,
+              mode: "manual",
+              temp: 21,
+              status: "comfort",
+            },
+          },
+        ]);
       });
     });
 
@@ -611,8 +679,14 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneMode("inst-1", "zone-1", DeviceMode.Auto);
-        // 2 device mode updates + 1 zone update = 3
-        expect(update).toHaveBeenCalledTimes(3);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { mode: "auto" } },
+          { path: "devices/dev-2/data", data: { mode: "auto" } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { mode: "auto" },
+          },
+        ]);
       });
 
       it("handles zone with no devices", async () => {
@@ -621,7 +695,12 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneMode("inst-1", "zone-1", DeviceMode.Auto);
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { mode: "auto" },
+          },
+        ]);
       });
     });
 
@@ -632,7 +711,12 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneIceMode("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { ice_mode: true },
+          },
+        ]);
       });
 
       it("sets ice_mode on all devices and updates zone", async () => {
@@ -641,7 +725,13 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneIceMode("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(2);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { ice_mode: true } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { ice_mode: true },
+          },
+        ]);
       });
     });
 
@@ -652,7 +742,12 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBlockLocal("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { block_local: true },
+          },
+        ]);
       });
 
       it("sets block_local on all devices and updates zone", async () => {
@@ -661,7 +756,14 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBlockLocal("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(3);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { block_local: true } },
+          { path: "devices/dev-2/data", data: { block_local: true } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { block_local: true },
+          },
+        ]);
       });
     });
 
@@ -672,7 +774,12 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBlockRemote("inst-1", "zone-1", false);
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { block_remote: false },
+          },
+        ]);
       });
 
       it("sets block_remote on all devices and updates zone", async () => {
@@ -681,7 +788,13 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBlockRemote("inst-1", "zone-1", false);
-        expect(update).toHaveBeenCalledTimes(2);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { block_remote: false } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { block_remote: false },
+          },
+        ]);
       });
     });
 
@@ -692,7 +805,12 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBuzzer("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { buzzer: true },
+          },
+        ]);
       });
 
       it("sets buzzer on all devices and updates zone", async () => {
@@ -701,7 +819,13 @@ describe("library", () => {
           val: () => mockZone,
         } as any);
         await client.setZoneBuzzer("inst-1", "zone-1", true);
-        expect(update).toHaveBeenCalledTimes(2);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { buzzer: true } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { buzzer: true },
+          },
+        ]);
       });
     });
 
@@ -746,8 +870,19 @@ describe("library", () => {
           val: () => ({ devices: { "dev-2": true } }),
         } as any);
         await client.setInstallationPower("inst-1", false);
-        // 2 device updates + 2 zone updates + 1 installation update = 5
-        expect(update).toHaveBeenCalledTimes(5);
+        expect(getUpdateCalls()).toEqual([
+          { path: "devices/dev-1/data", data: { power: false } },
+          { path: "devices/dev-2/data", data: { power: false } },
+          { path: "installations2/inst-1", data: { power: false } },
+          {
+            path: "installations2/inst-1/zones/zone-1",
+            data: { power: false },
+          },
+          {
+            path: "installations2/inst-1/zones/zone-2",
+            data: { power: false },
+          },
+        ]);
       });
 
       it("handles installation with no zones", async () => {
@@ -756,8 +891,9 @@ describe("library", () => {
           val: () => mockInstallation,
         } as any);
         await client.setInstallationPower("inst-1", false);
-        // Only installation update
-        expect(update).toHaveBeenCalledTimes(1);
+        expect(getUpdateCalls()).toEqual([
+          { path: "installations2/inst-1", data: { power: false } },
+        ]);
       });
     });
   });
