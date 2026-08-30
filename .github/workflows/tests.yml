@@ -35,7 +35,7 @@ jobs:
       - run: yarn cli --help
       - run: yarn build
       - run: node dist/cli.js --help
-      - run: npm pack --dry-run
+      - run: yarn test:package
 
   publish:
     needs: test
