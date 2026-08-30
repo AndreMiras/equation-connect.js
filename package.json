@@ -28,7 +28,7 @@
   "author": "Andre Miras",
   "license": "ISC",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "bugs": {
     "url": "https://github.com/AndreMiras/equation-connect.js/issues"
@@ -48,9 +48,5 @@
   },
   "optionalDependencies": {
     "commander": "^14.0.3"
-  },
-  "resolutions": {
-    "@google-cloud/cloud-sql-connector": "1.9.2",
-    "universal-analytics": "0.5.3"
   }
 }
