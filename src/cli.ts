@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 
-import { version } from "../package.json";
 import { createClient } from "./library";
 import { DeviceMode, DeviceStatus, FirebaseConfig } from "./types";
+
+const { version } = require("../package.json") as { version: string };
 
 const addAuthOptions = (command: Command): Command =>
   command
