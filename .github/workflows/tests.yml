@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test:coverage
       - name: Upload coverage to Codecov
@@ -32,7 +32,9 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
           fail_ci_if_error: true
+      - run: yarn cli --help
       - run: yarn build
+      - run: node dist/cli.js --help
       - run: npm pack --dry-run
 
   publish:
@@ -45,7 +47,7 @@ jobs:
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn build
       - run: npm publish
         env:
