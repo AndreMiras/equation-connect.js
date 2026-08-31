@@ -8,6 +8,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "strict": true,
+    "types": ["node"],
     "preserveConstEnums": true,
     "skipLibCheck": true
   },

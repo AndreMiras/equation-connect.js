@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/AndreMiras/equation-connect.js#readme",
   "devDependencies": {
+    "@types/node": "^22",
     "@vitest/coverage-v8": "^4.1.0",
     "firebase-tools": "15.28.2",
     "prettier": "^3.8.1",
