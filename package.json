@@ -48,6 +48,6 @@
     "firebase": "^12.18.0"
   },
   "optionalDependencies": {
-    "commander": "^14.0.3"
+    "commander": "^15.0.0"
   }
 }
