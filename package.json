@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/node": "^22",
     "@vitest/coverage-v8": "^4.1.0",
-    "firebase-tools": "15.28.2",
+    "firebase-tools": "15.29.0",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.19",
