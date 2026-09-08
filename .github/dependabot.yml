@@ -5,10 +5,13 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      day: "friday"
+      time: "17:18"
       timezone: "UTC"
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: ":arrow_up:"
   # GitHub Actions dependencies
@@ -16,8 +19,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
+      day: "friday"
+      time: "17:18"
       timezone: "UTC"
     open-pull-requests-limit: 5
     commit-message:
