@@ -45,7 +45,7 @@
     "vitest": "^4.1.0"
   },
   "dependencies": {
-    "firebase": "^12.18.0"
+    "firebase": "^13.0.0"
   },
   "optionalDependencies": {
     "commander": "^15.0.0"
